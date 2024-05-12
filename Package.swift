@@ -22,7 +22,7 @@ let package = Package(
             name: "FeatureManagementModule",
             dependencies: [
                 .product(name: "Relux", package: "darwin-relux"),
-                .product(name: "KeychainAccess", package: "KeychainAccess"),
+                .product(name: "KeychainAccess", package: "darwin-keychainaccess"),
                 .product(name: "SwiftPlus", package: "swift-stdlibplus"),
                 .product(name: "FoundationPlus", package: "darwin-foundationplus"),
             ],
