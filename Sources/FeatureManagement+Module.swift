@@ -5,14 +5,12 @@ import KeychainAccess
 extension FeatureManagement {
     @MainActor
     public final class Module: Relux.Module {
-        public let store: IFeatureManagementStore
         public let service: IFeatureManagementService
         
         public init(
-            sharedKeychain: Keychain,
+            store: IFeatureManagementStore,
             allFeatures: [FeatureManagement.Business.Model.Feature]
         ) {
-            self.store = FeatureManagement.Data.Store(sharedKeychain: sharedKeychain)
             self.service = FeatureManagement.Business.Service(store: store)
             
             let state = FeatureManagement.Business.State()

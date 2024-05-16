@@ -16,12 +16,12 @@ extension Keychain {
 extension FeatureManagement.Data {
     public actor Store: IFeatureManagementStore {
         public typealias Feature = FeatureManagement.Business.Model.Feature
-        private let sharedKeychain: Keychain
+        private let keychain: Keychain
 
         public init(
-            sharedKeychain: Keychain
+            keychain: Keychain
         ) {
-            self.sharedKeychain = sharedKeychain
+            self.keychain = keychain
         }
     }
 }
@@ -44,13 +44,13 @@ extension FeatureManagement.Data.Store {
     }
 
     private func getFeatures() throws -> [Feature.Key] {
-        let data = try sharedKeychain.getData(Keychain.Key.enabledFeatures)
+        let data = try keychain.getData(Keychain.Key.enabledFeatures)
         let features = [Feature.Key](fromJsonData: data) ?? []
         return features
     }
 
     private func setFeatures(new features: [Feature.Key]) throws  {
         let data = features.asJsonData ?? Data()
-        try sharedKeychain.set(data, key: Keychain.Key.enabledFeatures)
+        try keychain.set(data, key: Keychain.Key.enabledFeatures)
     }
 }
