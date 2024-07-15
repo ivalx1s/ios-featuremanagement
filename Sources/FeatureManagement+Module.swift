@@ -3,9 +3,12 @@ import Relux
 import KeychainAccess
 
 extension FeatureManagement {
-    @MainActor
     public final class Module: Relux.Module {
         public let service: IFeatureManagementService
+		
+		public let states: [ReluxState]
+		public let viewStates: [any ReluxViewState]
+		public let sagas: [ReluxSaga]
         
         public init(
             store: IFeatureManagementStore,
@@ -18,14 +21,11 @@ extension FeatureManagement {
                 featureState: state,
                 allFeatures:  allFeatures
             )
-
             let saga = FeatureManagement.Business.Saga(svc:service)
             
-            super.init(
-                states: [state],
-                viewStates: [viewState],
-                sagas: [saga]
-            )
+			self.states = [state]
+			self.viewStates = [viewState]
+			self.sagas = [saga]
         }
     }
 }

@@ -31,6 +31,8 @@ extension FeatureManagement.Business.Model.FeatureComposite {
     }
 }
 
+extension FeatureManagement.Business.Model.Feature.Key: Sendable {}
+
 extension FeatureManagement.Business.Model {
     public struct Feature {
         public typealias Key = String
