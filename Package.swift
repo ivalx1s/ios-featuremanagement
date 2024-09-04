@@ -10,7 +10,7 @@ let package = Package(
     products: [
         .library(
             name: "ReluxFeatureManagement",
-            targets: ["FeatureManagement"]
+            targets: ["ReluxFeatureManagement"]
         ),
     ],
     dependencies: [
