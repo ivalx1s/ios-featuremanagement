@@ -1,4 +1,4 @@
-// swift-tools-version: 6.0
+// swift-tools-version: 5.10
 
 import PackageDescription
 
@@ -9,19 +9,19 @@ let package = Package(
     ],
     products: [
         .library(
-            name: "FeatureManagementModule",
-            targets: ["FeatureManagementModule"]
+            name: "ReluxFeatureManagement",
+            targets: ["FeatureManagement"]
         ),
     ],
     dependencies: [
         .package(url: "https://github.com/ivalx1s/darwin-keychainaccess.git", .upToNextMajor(from: "4.2.3")),
-        .package(url: "https://github.com/ivalx1s/darwin-relux.git", .upToNextMajor(from: "6.0.0")),
+        .package(url: "https://github.com/ivalx1s/darwin-relux.git", .upToNextMajor(from: "5.0.0")),
         .package(url: "https://github.com/ivalx1s/swift-stdlibplus.git", .upToNextMajor(from: "1.0.0")),
-        .package(url: "https://github.com/ivalx1s/darwin-foundationplus.git", .upToNextMajor(from: "2.0.0")),
+        .package(url: "https://github.com/ivalx1s/darwin-foundationplus.git", .upToNextMajor(from: "2.1.0")),
     ],
     targets: [
         .target(
-            name: "FeatureManagementModule",
+            name: "ReluxFeatureManagement",
             dependencies: [
                 .product(name: "Relux", package: "darwin-relux"),
                 .product(name: "KeychainAccess", package: "darwin-keychainaccess"),
@@ -29,12 +29,7 @@ let package = Package(
                 .product(name: "FoundationPlus", package: "darwin-foundationplus"),
             ],
             path: "Sources"
-        ),
-        .testTarget(
-            name: "FeatureManagementModuleTests",
-            dependencies: ["FeatureManagementModule"],
-            path: "Tests"
-        ),
+        )
     ]
 )
 

@@ -1,7 +1,7 @@
 import Foundation
 import KeychainAccess
 
-public protocol IFeatureManagementStore {
+public protocol IFeatureManagementStore: Sendable {
     func readAllEnabledFeatures() async throws -> [FeatureManagement.Business.Model.Feature.Key]
     func upsert(feature: FeatureManagement.Business.Model.Feature.Key) async throws
     func delete(feature: FeatureManagement.Business.Model.Feature.Key) async throws
@@ -21,7 +21,7 @@ extension FeatureManagement.Data {
         public init(
             keychain: Keychain
         ) {
-            self.keychain = keychain
+			self.keychain = keychain
         }
     }
 }

@@ -2,7 +2,11 @@ import SwiftUI
 
 extension FeatureManagement.UI {
     struct EnvModifier: ViewModifier {
-        @EnvironmentObject private var featureState : FeatureManagement.UI.ViewState
+		@ObservedObject private var featureState : FeatureManagement.UI.ViewState
+		
+		init(featureState: FeatureManagement.UI.ViewState) {
+			self.featureState = featureState
+		}
 
         func body(content : Content) -> some View {
             content
@@ -12,9 +16,9 @@ extension FeatureManagement.UI {
 }
 
 extension View {
-    public func bindEnabledFeatures() -> some View {
+    public func bindEnabledFeatures(featureState : FeatureManagement.UI.ViewState) -> some View {
         self
-            .modifier(FeatureManagement.UI.EnvModifier())
+			.modifier(FeatureManagement.UI.EnvModifier(featureState: featureState))
     }
 }
 

@@ -1,7 +1,10 @@
 import Foundation
 
-protocol IFeatureManagementSaga: ReluxSaga {}
 
+extension FeatureManagement {
+	public protocol IFeatureManagementSaga: Relux.Saga {}
+}
+	
 extension FeatureManagement.Business {
     public actor Saga {
         private let svc: IFeatureManagementService
@@ -14,8 +17,8 @@ extension FeatureManagement.Business {
     }
 }
 
-extension FeatureManagement.Business.Saga: IFeatureManagementSaga {
-    public func apply(_ effect: ReluxEffect) async {
+extension FeatureManagement.Business.Saga: FeatureManagement.IFeatureManagementSaga {
+    public func apply(_ effect: Relux.Effect) async {
         switch effect as? FeatureManagement.Business.Effect {
         case .none: break
         case .obtainEnabledFeatures: await obtainEnabledFeatures()
@@ -32,7 +35,7 @@ extension FeatureManagement.Business.Saga {
             await action {
                 FeatureManagement.Business.Action.obtainFeaturesSuccess(features: features)
             }
-        case let .failure(err):
+        case .failure:
             await actions {
                 FeatureManagement.Business.Action.obtainFeaturesFail
             }
@@ -45,7 +48,7 @@ extension FeatureManagement.Business.Saga {
             await action {
                 FeatureManagement.Business.Action.enableFeatureSuccess(feature: feature)
             }
-        case let .failure(err):
+        case .failure:
             await actions {
                 FeatureManagement.Business.Action.enableFeatureFail(feature: feature)
             }
@@ -58,7 +61,7 @@ extension FeatureManagement.Business.Saga {
             await action {
                 FeatureManagement.Business.Action.disableFeatureSuccess(feature: feature)
             }
-        case let .failure(err):
+        case .failure:
             await actions {
                 FeatureManagement.Business.Action.disableFeatureFail(feature: feature)
             }

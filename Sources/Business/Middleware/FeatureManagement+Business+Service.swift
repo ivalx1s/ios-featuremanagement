@@ -1,6 +1,6 @@
 import Foundation
 
-public protocol IFeatureManagementService {
+public protocol IFeatureManagementService: Sendable {
     func checkIsEnabled(feature: FeatureManagement.Business.Model.Feature.Key) async -> Result<Bool, FeatureManagement.Business.Err>
     func getEnabledFeatures() async -> Result<[FeatureManagement.Business.Model.Feature.Key], FeatureManagement.Business.Err>
     func addToEnabled(feature: FeatureManagement.Business.Model.Feature.Key) async -> Result<Void, FeatureManagement.Business.Err>
