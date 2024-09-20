@@ -2,7 +2,7 @@ import SwiftUI
 
 extension FeatureManagement.UI {
     struct EnvModifier: ViewModifier {
-        @EnvironmentObject private var featureState : FeatureManagement.UI.ViewState
+        @EnvironmentObject private var featureState: FeatureManagement.UI.ViewState
 
         func body(content : Content) -> some View {
             content
@@ -32,7 +32,7 @@ extension FeatureManagement.UI {
 
     struct FeaturePresentationConditionalModifier<ElseView: View>: ViewModifier {
         @Environment(\.enabledFeatures) private var features
-        let expression : FeatureManagement.Business.Model.FeatureComposite
+        let expression: FeatureManagement.Business.Model.FeatureComposite
         @ViewBuilder let elseView: ElseView
 
         func body(content : Content) -> some View {
