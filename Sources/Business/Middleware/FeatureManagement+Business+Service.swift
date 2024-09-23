@@ -1,27 +1,30 @@
 import Foundation
 
-public protocol IFeatureManagementService: Sendable {
-    func checkIsEnabled(feature: FeatureManagement.Business.Model.Feature.Key) async -> Result<Bool, FeatureManagement.Business.Err>
-    func getEnabledFeatures() async -> Result<[FeatureManagement.Business.Model.Feature.Key], FeatureManagement.Business.Err>
-    func addToEnabled(feature: FeatureManagement.Business.Model.Feature.Key) async -> Result<Void, FeatureManagement.Business.Err>
-    func removeFromEnabled(feature: FeatureManagement.Business.Model.Feature.Key) async -> Result<Void, FeatureManagement.Business.Err>
+extension FeatureManagement.Business {
+    public protocol IService: Sendable {
+        func checkIsEnabled(feature: FeatureManagement.Business.Model.Feature.Key) async -> Result<Bool, FeatureManagement.Business.Err>
+        func getEnabledFeatures() async -> Result<[FeatureManagement.Business.Model.Feature.Key], FeatureManagement.Business.Err>
+        func addToEnabled(feature: FeatureManagement.Business.Model.Feature.Key) async -> Result<Void, FeatureManagement.Business.Err>
+        func removeFromEnabled(feature: FeatureManagement.Business.Model.Feature.Key) async -> Result<Void, FeatureManagement.Business.Err>
+    }
 }
+
 
 extension FeatureManagement.Business {
     public actor Service {
         public typealias Err = FeatureManagement.Business.Err
         public typealias Feature = FeatureManagement.Business.Model.Feature
-        private let store: IFeatureManagementStore
+        private let store: FeatureManagement.Data.IStore
 
         public init(
-            store: IFeatureManagementStore
+            store: FeatureManagement.Data.IStore
         ) {
             self.store = store
         }
     }
 }
 
-extension FeatureManagement.Business.Service: IFeatureManagementService {
+extension FeatureManagement.Business.Service: FeatureManagement.Business.IService {
     public func checkIsEnabled(feature: Feature.Key) async -> Result<Bool, Err> {
         do {
             return await .success(

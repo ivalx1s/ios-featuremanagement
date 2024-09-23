@@ -1,11 +1,14 @@
 import Foundation
 import KeychainAccess
 
-public protocol IFeatureManagementStore: Sendable {
-    func readAllEnabledFeatures() async throws -> [FeatureManagement.Business.Model.Feature.Key]
-    func upsert(feature: FeatureManagement.Business.Model.Feature.Key) async throws
-    func delete(feature: FeatureManagement.Business.Model.Feature.Key) async throws
+extension FeatureManagement.Data {
+    public protocol IStore: Sendable {
+        func readAllEnabledFeatures() async throws -> [FeatureManagement.Business.Model.Feature.Key]
+        func upsert(feature: FeatureManagement.Business.Model.Feature.Key) async throws
+        func delete(feature: FeatureManagement.Business.Model.Feature.Key) async throws
+    }
 }
+
 
 extension Keychain {
     struct Key {
@@ -14,7 +17,7 @@ extension Keychain {
 }
 
 extension FeatureManagement.Data {
-    public actor Store: IFeatureManagementStore {
+    public actor Store {
         public typealias Feature = FeatureManagement.Business.Model.Feature
         private let keychain: Keychain
 
@@ -26,7 +29,7 @@ extension FeatureManagement.Data {
     }
 }
 
-extension FeatureManagement.Data.Store {
+extension FeatureManagement.Data.Store: FeatureManagement.Data.IStore {
     public func readAllEnabledFeatures() async throws -> [FeatureManagement.Business.Model.Feature.Key] {
         try getFeatures()
     }

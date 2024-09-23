@@ -1,23 +1,23 @@
 import Foundation
 
 
-extension FeatureManagement {
-	public protocol IFeatureManagementSaga: Relux.Saga {}
+extension FeatureManagement.Business {
+	public protocol ISaga: Relux.Saga {}
 }
 	
 extension FeatureManagement.Business {
     public actor Saga {
-        private let svc: IFeatureManagementService
+        private let svc: IService
 
         public init(
-            svc: IFeatureManagementService
+            svc: IService
         ) {
             self.svc = svc
         }
     }
 }
 
-extension FeatureManagement.Business.Saga: FeatureManagement.IFeatureManagementSaga {
+extension FeatureManagement.Business.Saga: FeatureManagement.Business.ISaga {
     public func apply(_ effect: Relux.Effect) async {
         switch effect as? FeatureManagement.Business.Effect {
         case .none: break

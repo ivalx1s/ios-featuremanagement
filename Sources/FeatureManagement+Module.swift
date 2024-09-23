@@ -3,27 +3,35 @@ import Relux
 import KeychainAccess
 
 extension FeatureManagement {
-	
+    @MainActor
 	public final class Module: Relux.Module {
-        public let service: IFeatureManagementService
+        public let service: Business.IService
 		public let states: [Relux.State]
 		public let uistates: [any Relux.Presentation.StatePresenting]
 		public let routers: [any Relux.Navigation.RouterProtocol]
 		public let sagas: [Relux.Saga]
         
         public init(
-			sagas: [any IFeatureManagementSaga],
-			serviceFacade: any IFeatureManagementService,
-			states: [any Relux.State],
-			uistates: [any Relux.Presentation.StatePresenting],
-			store: IFeatureManagementStore
+            store: FeatureManagement.Data.IStore,
+            allFeatures: [FeatureManagement.Business.Model.Feature]
         ) {
-			let saga = FeatureManagement.Business.Saga(svc: serviceFacade)
-            self.service = FeatureManagement.Business.Service(store: store)
-			self.states = states
-			self.uistates = uistates
+            let service = FeatureManagement.Business.Service(store: store)
+            self.service = service
+
+			let saga = FeatureManagement.Business.Saga(svc: service)
+            self.sagas = [saga]
+
+            let state = FeatureManagement.Business.State()
+            self.states = [state]
+
+            self.uistates = [
+                FeatureManagement.UI.ViewState(
+                    featureState: state,
+                    allFeatures: allFeatures
+                )
+            ]
+            
 			self.routers = []
-			self.sagas = [saga]
         }
     }
 }
