@@ -6,6 +6,7 @@ extension FeatureManagement {
     @MainActor
 	public final class Module: Relux.Module {
         public let service: Business.IService
+        public let viewState: UI.ViewState
 		public let states: [Relux.State]
 		public let uistates: [any Relux.Presentation.StatePresenting]
 		public let routers: [any Relux.Navigation.RouterProtocol]
@@ -24,13 +25,13 @@ extension FeatureManagement {
             let state = FeatureManagement.Business.State()
             self.states = [state]
 
-            self.uistates = [
-                FeatureManagement.UI.ViewState(
-                    featureState: state,
-                    allFeatures: allFeatures
-                )
-            ]
-            
+            let viewState = FeatureManagement.UI.ViewState(
+                featureState: state,
+                allFeatures: allFeatures
+            )
+            self.viewState = viewState
+            self.uistates = [viewState]
+
 			self.routers = []
         }
     }

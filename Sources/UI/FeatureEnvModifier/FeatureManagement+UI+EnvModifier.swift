@@ -16,7 +16,7 @@ extension FeatureManagement.UI {
 }
 
 extension View {
-    public func bindEnabledFeatures(featureState : FeatureManagement.UI.ViewState) -> some View {
+    public func bindEnabledFeatures(featureState: FeatureManagement.UI.ViewState) -> some View {
         self
 			.modifier(FeatureManagement.UI.EnvModifier(featureState: featureState))
     }
