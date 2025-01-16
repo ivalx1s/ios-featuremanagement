@@ -1,7 +1,7 @@
 import Foundation
 
 extension FeatureManagement.Business {
-    enum Action: Relux.Action {
+    public enum Action: Relux.Action {
         case obtainFeaturesSuccess(features: [Model.Feature.Key])
         case obtainFeaturesFail
 
