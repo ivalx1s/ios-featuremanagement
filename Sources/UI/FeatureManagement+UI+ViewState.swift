@@ -19,7 +19,8 @@ extension FeatureManagement.UI {
 
         private func initPipelines(featureState: FeatureManagement.Business.State) async {
             await featureState.$enabledFeatures
-				.asyncMap { $0.asArray }
+                .map { $0.sorted() }
+                .removeDuplicates()
 				.receive(on: DispatchQueue.main)
                 .assign (to: &$enabledFeatures)
         }
