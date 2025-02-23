@@ -1,18 +1,33 @@
-# ios-featuremanagement
+# iOS Feature Management
 
-* add dependency to project
-* connect to relux via Relux.register(FeatureManagement.module())
-* configure in project
-* * add your specific feature such as
+## Adding Dependency to the Project
+
+- Add the dependency to the project
+- Connect to Relux:
+
+  ```swift
+  Relux.register(FeatureManagement.module())
+  ```
+
+- Configure in the project
+
+## Feature Configuration
+
+### Define Features
+
+```swift
 extension FeatureManagement.Business.Model {
     enum MyAppFeature: FeatureManagement.Business.Model.Feature.Key {
         case debugMenu = "debugMenu"
         case feature1 = "feature1"
     }
 }
+```
 
+### Add Protocols
+
+```swift
 extension FeatureManagement.Business.Model.MyAppFeature: CaseIterable {}
-
 extension FeatureManagement.Business.Model.MyAppFeature: RawRepresentable {}
 
 extension FeatureManagement.Business.Model.MyAppFeature: ExpressibleByStringLiteral {
@@ -26,8 +41,11 @@ extension FeatureManagement.Business.Model.MyAppFeature: Codable {}
 extension FeatureManagement.Business.Model.MyAppFeature: Identifiable {
     var id: FeatureManagement.Business.Model.Feature.Key { rawValue }
 }
+```
 
-** add extensions for FeatureManagement.ViewState for your app features specifics
+## Extend `FeatureManagement.ViewState`
+
+```swift
 extension FeatureManagement.UI.ViewState {
     var allMembraneFeatures: [FeatureManagement.Business.Model.MyAppFeature] {
         self.allFeatures
@@ -38,39 +56,56 @@ extension FeatureManagement.UI.ViewState {
         expression.check(against: enabledFeatures)
     }
 }
+```
 
+### Convert Sequences
 
+```swift
 extension Sequence where Element == FeatureManagement.Business.Model.Feature.Key {
-    var asMyAppFeatures: [FeatureManagement.Business.Model.MembraneFeature] {
+    var asMyAppFeatures: [FeatureManagement.Business.Model.MyAppFeature] {
         self.compactMap { .init(rawValue: $0) }
     }
 }
+```
 
-** specify exact feature composite for feature expressions
+## Define Exact Feature Expressions
 
+```swift
 extension FeatureManagement.Business.Model.FeatureComposite {
     static func exactFeature(_ feature: FeatureManagement.Business.Model.MyAppFeature) -> Self {
         .feature(feature: feature.rawValue)
     }
 }
+```
 
-* propogate features to root view
-** connect envObject to view
-      @EnvironmentObject private var featuresState: FeatureManagement.UI.ViewState
-** add feature propogating modifier to view
-  .bindEnabledFeatures(featureState: featuresState)
+## Propagate Features to the Root View
 
-* how to use on view
+### Connect `envObject` to View
+
+```swift
+@EnvironmentObject private var featuresState: FeatureManagement.UI.ViewState
+```
+
+### Add Feature Propagating Modifier to View
+
+```swift
+.bindEnabledFeatures(featureState: featuresState)
+```
+
+## Using Features in the UI
+
+```swift
 Group {
-      divider
-      Relux.NavigationLink(page: .membraneApp(page: .account(page: .debugMenu))) {
-          CustomMenuItem(model: SettingPage.debug.model)
-      }
-  }
-      .presentIf(
-        .anySatisfy(composites: [
-          .exactFeature(.debugMenu),
-          .condition({ DeviceEnv.isSimulator })
-        ])
-      )
-           
+    divider
+    Relux.NavigationLink(page: .membraneApp(page: .account(page: .debugMenu))) {
+        CustomMenuItem(model: SettingPage.debug.model)
+    }
+}
+.presentIf(
+    .anySatisfy(composites: [
+        .exactFeature(.debugMenu),
+        .condition({ DeviceEnv.isSimulator })
+    ])
+)
+```
+
