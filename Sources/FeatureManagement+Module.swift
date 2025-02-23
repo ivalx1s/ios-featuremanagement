@@ -5,6 +5,7 @@ import KeychainAccess
 extension FeatureManagement {
     @MainActor
 	public final class Module: Relux.Module {
+        public let store: FeatureManagement.Data.IStore
         public let service: Business.IService
         public let viewState: UI.ViewState
 		public let states: [Relux.State]
@@ -16,6 +17,8 @@ extension FeatureManagement {
             store: FeatureManagement.Data.IStore,
             allFeatures: [FeatureManagement.Business.Model.Feature]
         ) {
+            self.store = store
+
             let service = FeatureManagement.Business.Service(store: store)
             self.service = service
 

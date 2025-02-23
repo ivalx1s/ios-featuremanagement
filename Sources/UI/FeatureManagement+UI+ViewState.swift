@@ -9,7 +9,10 @@ extension FeatureManagement.UI {
         @Published public var enabledFeatures: [FeatureManagement.Business.Model.Feature.Key] = []
         @Published public var allFeatures: [FeatureManagement.Business.Model.Feature]
 
-        public init(featureState: FeatureManagement.Business.State, allFeatures: [FeatureManagement.Business.Model.Feature]) {
+        public init(
+            featureState: FeatureManagement.Business.State,
+            allFeatures: [FeatureManagement.Business.Model.Feature]
+        ) {
             self.allFeatures = allFeatures
 
             Task {
