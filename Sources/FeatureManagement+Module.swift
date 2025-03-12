@@ -16,7 +16,7 @@ extension FeatureManagement {
         public init(
             store: FeatureManagement.Data.IStore,
             allFeatures: [FeatureManagement.Business.Model.Feature]
-        ) {
+        ) async {
             self.store = store
 
             let service = FeatureManagement.Business.Service(store: store)
@@ -28,7 +28,7 @@ extension FeatureManagement {
             let state = FeatureManagement.Business.State()
             self.states = [state]
 
-            let viewState = FeatureManagement.UI.ViewState(
+            let viewState = await FeatureManagement.UI.ViewState(
                 featureState: state,
                 allFeatures: allFeatures
             )

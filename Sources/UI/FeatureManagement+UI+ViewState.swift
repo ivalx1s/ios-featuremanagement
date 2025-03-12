@@ -12,12 +12,9 @@ extension FeatureManagement.UI {
         public init(
             featureState: FeatureManagement.Business.State,
             allFeatures: [FeatureManagement.Business.Model.Feature]
-        ) {
+        ) async {
             self.allFeatures = allFeatures
-
-            Task {
-                await initPipelines(featureState: featureState)
-            }
+            await initPipelines(featureState: featureState)
         }
 
         private func initPipelines(featureState: FeatureManagement.Business.State) async {
