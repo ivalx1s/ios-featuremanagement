@@ -19,10 +19,15 @@ extension FeatureManagement.UI {
 
         private func initPipelines(featureState: FeatureManagement.Business.State) async {
             await featureState.$enabledFeatures
-                .map { $0.sorted() }
+                .map(Self.map)
                 .removeDuplicates()
 				.receive(on: DispatchQueue.main)
-                .assign (to: &$enabledFeatures)
+                .assign(to: &$enabledFeatures)
+        }
+
+        nonisolated
+        private static func map(set: Set<FeatureManagement.Business.Model.Feature.Key>) -> [FeatureManagement.Business.Model.Feature.Key] {
+            set.sorted()
         }
     }
 }
