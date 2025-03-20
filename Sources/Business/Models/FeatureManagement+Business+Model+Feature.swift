@@ -2,10 +2,10 @@ import Foundation
 
 extension FeatureManagement.Business.Model {
     public indirect enum FeatureComposite {
-        case allSatisfy(composites: [FeatureComposite])
-        case anySatisfy(composites: [FeatureComposite])
-        case not(composite: FeatureComposite)
-        case feature(feature: Feature.Key)
+        case allSatisfy(_ composites: [FeatureComposite])
+        case anySatisfy(_ composites: [FeatureComposite])
+        case not(_ composite: FeatureComposite)
+        case feature(_ feature: Feature.Key)
         case condition(() -> Bool)
     }
 }

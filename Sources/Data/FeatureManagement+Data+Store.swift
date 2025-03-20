@@ -4,8 +4,9 @@ import KeychainAccess
 extension FeatureManagement.Data {
     public protocol IStore: Sendable {
         func readAllEnabledFeatures() async throws -> [FeatureManagement.Business.Model.Feature.Key]
-        func upsert(feature: FeatureManagement.Business.Model.Feature.Key) async throws
-        func delete(feature: FeatureManagement.Business.Model.Feature.Key) async throws
+        func replace(with features: [FeatureManagement.Business.Model.Feature.Key]) async throws
+        func upsert(features: [FeatureManagement.Business.Model.Feature.Key]) async throws
+        func delete(features: [FeatureManagement.Business.Model.Feature.Key]) async throws
     }
 }
 
@@ -34,16 +35,18 @@ extension FeatureManagement.Data.Store: FeatureManagement.Data.IStore {
         try getFeatures()
     }
 
-    public func upsert(feature: FeatureManagement.Business.Model.Feature.Key) async throws {
-        var features = try getFeatures().asSet
-        features.update(with: feature)
-        try setFeatures(new: features.asArray.sorted())
+    public func replace(with features: [FeatureManagement.Business.Model.Feature.Key]) async throws {
+        try setFeatures(new: features.asSet.sorted())
     }
 
-    public func delete(feature: FeatureManagement.Business.Model.Feature.Key) async throws {
-        var features = try getFeatures().asSet
-        features.remove(feature)
-        try setFeatures(new: features.asArray.sorted())
+    public func upsert(features: [FeatureManagement.Business.Model.Feature.Key]) async throws {
+        let storedFeatures = try getFeatures().asSet
+        try setFeatures(new: storedFeatures.union(features).sorted())
+    }
+
+    public func delete(features: [FeatureManagement.Business.Model.Feature.Key]) async throws {
+        let storedFeatures = try getFeatures().asSet
+        try setFeatures(new: storedFeatures.subtracting(features).sorted())
     }
 
     private func getFeatures() throws -> [Feature.Key] {

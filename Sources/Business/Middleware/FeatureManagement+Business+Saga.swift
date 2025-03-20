@@ -20,10 +20,13 @@ extension FeatureManagement.Business {
 extension FeatureManagement.Business.Saga: FeatureManagement.Business.ISaga {
     public func apply(_ effect: Relux.Effect) async {
         switch effect as? FeatureManagement.Business.Effect {
-        case .none: break
-        case .obtainEnabledFeatures: await obtainEnabledFeatures()
-        case let .enableFeature(feature): await enableFeature(feature)
-        case let .disableFeature(feature): await disableFeature(feature)
+            case .none: break
+            case .obtainEnabledFeatures: await obtainEnabledFeatures()
+            case let .setFeatures(features): await setFeatures(features)
+            case let .enableFeature(feature): await enableFeatures([feature])
+            case let .disableFeature(feature): await disableFeatures([feature])
+            case let .enableFeatures(features): await enableFeatures(features)
+            case let .disableFeatures(features): await disableFeatures(features)
         }
     }
 }
@@ -31,40 +34,53 @@ extension FeatureManagement.Business.Saga: FeatureManagement.Business.ISaga {
 extension FeatureManagement.Business.Saga {
     private func obtainEnabledFeatures() async {
         switch await svc.getEnabledFeatures() {
-        case let .success(features):
-            await action {
-                FeatureManagement.Business.Action.obtainFeaturesSuccess(features: features)
-            }
-        case .failure:
-            await actions {
-                FeatureManagement.Business.Action.obtainFeaturesFail
-            }
+            case let .success(features):
+                await action {
+                    FeatureManagement.Business.Action.obtainFeaturesSuccess(features: features)
+                }
+            case let .failure(err):
+                await actions {
+                    FeatureManagement.Business.Action.obtainFeaturesFail(err: err)
+                }
         }
     }
 
-    private func enableFeature(_ feature: FeatureManagement.Business.Model.Feature.Key) async {
-        switch await svc.addToEnabled(feature: feature) {
-        case .success:
-            await action {
-                FeatureManagement.Business.Action.enableFeatureSuccess(feature: feature)
-            }
-        case .failure:
-            await actions {
-                FeatureManagement.Business.Action.enableFeatureFail(feature: feature)
-            }
+    private func setFeatures(_ features: [FeatureManagement.Business.Model.Feature.Key]) async {
+        switch await svc.setFeatures(features: features) {
+            case .success:
+                await action {
+                    FeatureManagement.Business.Action.setFeaturesSuccess(features: features)
+                }
+            case let .failure(err):
+                await actions {
+                    FeatureManagement.Business.Action.setFeaturesFail(err: err)
+                }
         }
     }
 
-    private func disableFeature(_ feature: FeatureManagement.Business.Model.Feature.Key) async {
-        switch await svc.removeFromEnabled(feature: feature) {
-        case .success:
-            await action {
-                FeatureManagement.Business.Action.disableFeatureSuccess(feature: feature)
-            }
-        case .failure:
-            await actions {
-                FeatureManagement.Business.Action.disableFeatureFail(feature: feature)
-            }
+    private func enableFeatures(_ features: [FeatureManagement.Business.Model.Feature.Key]) async {
+        switch await svc.addToEnabled(features: features) {
+            case .success:
+                await action {
+                    FeatureManagement.Business.Action.enableFeaturesSuccess(features: features)
+                }
+            case let .failure(err):
+                await actions {
+                    FeatureManagement.Business.Action.enableFeaturesFail(err: err)
+                }
+        }
+    }
+
+    private func disableFeatures(_ features: [FeatureManagement.Business.Model.Feature.Key]) async {
+        switch await svc.removeFromEnabled(features: features) {
+            case .success:
+                await action {
+                    FeatureManagement.Business.Action.disableFeaturesSuccess(features: features)
+                }
+            case let .failure(err):
+                await actions {
+                    FeatureManagement.Business.Action.disableFeaturesFail(err: err)
+                }
         }
     }
 }

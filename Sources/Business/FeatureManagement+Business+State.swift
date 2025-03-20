@@ -1,9 +1,10 @@
 import Foundation
+import SwiftPlus
 
 extension FeatureManagement.Business {
 	public actor State: Relux.State {
-        @Published var enabledFeatures: Set<Model.Feature.Key> = []
-		
+        @Published var enabledFeatures: MaybeData<Set<Model.Feature.Key>, Err> = .initial()
+
 		public init() {
 		}
 
@@ -15,7 +16,7 @@ extension FeatureManagement.Business {
         }
 
 		public func cleanup() async {
-            self.enabledFeatures = []
+            self.enabledFeatures = .initial()
         }
     }
 }

@@ -10,7 +10,7 @@ extension FeatureManagement.UI {
 
         func body(content : Content) -> some View {
             content
-                .environment(\.enabledFeatures, featureState.enabledFeatures)
+                .environment(\.enabledFeatures, featureState.enabledFeatures.value ?? [])
         }
     }
 }
@@ -36,15 +36,14 @@ extension FeatureManagement.UI {
 
     struct FeaturePresentationConditionalModifier<ElseView: View>: ViewModifier {
         @Environment(\.enabledFeatures) private var features
-        let expression : FeatureManagement.Business.Model.FeatureComposite
+
+        let expression: FeatureManagement.Business.Model.FeatureComposite
         @ViewBuilder let elseView: ElseView
 
         func body(content : Content) -> some View {
             switch expression.check(against: features) {
-            case true:
-                content
-            case false:
-                elseView
+                case true: content
+                case false: elseView
             }
         }
     }

@@ -2,18 +2,21 @@ import Foundation
 
 extension FeatureManagement.Business {
     public protocol IService: Sendable {
-        func checkIsEnabled(feature: FeatureManagement.Business.Model.Feature.Key) async -> Result<Bool, FeatureManagement.Business.Err>
-        func getEnabledFeatures() async -> Result<[FeatureManagement.Business.Model.Feature.Key], FeatureManagement.Business.Err>
-        func addToEnabled(feature: FeatureManagement.Business.Model.Feature.Key) async -> Result<Void, FeatureManagement.Business.Err>
-        func removeFromEnabled(feature: FeatureManagement.Business.Model.Feature.Key) async -> Result<Void, FeatureManagement.Business.Err>
+        typealias Feature = FeatureManagement.Business.Model.Feature
+        typealias Err = FeatureManagement.Business.Err
+
+        func checkIsEnabled(feature: Feature.Key) async -> Result<Bool, Err>
+        func setFeatures(features: [Feature.Key]) async -> Result<Void, Err>
+        func getEnabledFeatures() async -> Result<[Feature.Key], Err>
+        func addToEnabled(features: [Feature.Key]) async -> Result<Void, Err>
+        func removeFromEnabled(features: [Feature.Key]) async -> Result<Void, Err>
     }
 }
 
 
 extension FeatureManagement.Business {
     public actor Service {
-        public typealias Err = FeatureManagement.Business.Err
-        public typealias Feature = FeatureManagement.Business.Model.Feature
+
         private let store: FeatureManagement.Data.IStore
 
         public init(
@@ -25,6 +28,14 @@ extension FeatureManagement.Business {
 }
 
 extension FeatureManagement.Business.Service: FeatureManagement.Business.IService {
+    public func setFeatures(features: [Feature.Key]) async -> Result<Void, Err> {
+        do {
+            return await .success(try store.replace(with: features))
+        } catch {
+            return .failure(.failedToReplaceFeatures(cause: error))
+        }
+    }
+
     public func checkIsEnabled(feature: Feature.Key) async -> Result<Bool, Err> {
         do {
             return await .success(
@@ -45,17 +56,17 @@ extension FeatureManagement.Business.Service: FeatureManagement.Business.IServic
         }
     }
 
-    public func addToEnabled(feature: Feature.Key) async -> Result<Void, Err> {
+    public func addToEnabled(features: [Feature.Key]) async -> Result<Void, Err> {
         do {
-            return await .success(try store.upsert(feature: feature))
+            return await .success(try store.upsert(features: features))
         } catch {
             return .failure(.failedToAddToEnabledFeatures(cause: error))
         }
     }
 
-    public func removeFromEnabled(feature: Feature.Key) async -> Result<Void, Err> {
+    public func removeFromEnabled(features: [Feature.Key]) async -> Result<Void, Err> {
         do {
-            return await .success(try store.delete(feature: feature))
+            return await .success(try store.delete(features: features))
         } catch {
             return .failure(.failedToRemoveFromEnabledFeatures(cause: error))
         }
