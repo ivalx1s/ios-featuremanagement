@@ -7,10 +7,8 @@ extension FeatureManagement {
 	public final class Module: Relux.Module {
         public let store: FeatureManagement.Data.IStore
         public let service: Business.IService
-        public let viewState: UI.ViewState
-		public let states: [Relux.State]
-		public let uistates: [any Relux.Presentation.StatePresenting]
-		public let routers: [any Relux.Navigation.RouterProtocol]
+        public let state: Business.State
+        public let states: [Relux.AnyState]
 		public let sagas: [Relux.Saga]
         
         public init(
@@ -25,17 +23,9 @@ extension FeatureManagement {
 			let saga = FeatureManagement.Business.Saga(svc: service)
             self.sagas = [saga]
 
-            let state = FeatureManagement.Business.State()
+            let state = FeatureManagement.Business.State(allFeatures: allFeatures)
+            self.state = state
             self.states = [state]
-
-            let viewState = await FeatureManagement.UI.ViewState(
-                featureState: state,
-                allFeatures: allFeatures
-            )
-            self.viewState = viewState
-            self.uistates = [viewState]
-
-			self.routers = []
         }
     }
 }

@@ -4,26 +4,26 @@ extension FeatureManagement.Business.State {
     func internalReduce(with action: FeatureManagement.Business.Action) async {
         switch action {
             case let .obtainFeaturesSuccess(features):
-                self.enabledFeatures = .success(features.asSet)
+                self.enabledFeaturesSet = .success(features.asSet)
             case let .obtainFeaturesFail(err):
-                self.enabledFeatures = .failure(err)
+                self.enabledFeaturesSet = .failure(err)
 
             case let .setFeaturesSuccess(features):
-                self.enabledFeatures = .success(features.asSet)
+                self.enabledFeaturesSet = .success(features.asSet)
             case .setFeaturesFail:
                 break
 
             case let .enableFeaturesSuccess(features):
-                self.enabledFeatures = .success(
-                    (self.enabledFeatures.value ?? [])
+                self.enabledFeaturesSet = .success(
+                    (self.enabledFeaturesSet.value ?? [])
                         .union(features)
                 )
             case .enableFeaturesFail:
                 break
 
             case let .disableFeaturesSuccess(features):
-                self.enabledFeatures = .success(
-                    (self.enabledFeatures.value ?? [])
+                self.enabledFeaturesSet = .success(
+                    (self.enabledFeaturesSet.value ?? [])
                         .subtracting(features)
                 )
             case .disableFeaturesFail:
