@@ -27,6 +27,11 @@ extension FeatureManagement.Business {
 		public func cleanup() async {
             self.enabledFeaturesSet = .initial()
         }
+        
+        public func check(expression: FeatureManagement.Business.Model.FeatureComposite) -> Bool {
+            guard let value = enabledFeatures.value else { return false }
+            return expression.check(against: value)
+        }
     }
 }
 
@@ -34,7 +39,7 @@ extension FeatureManagement.Business.State {
     private func initPipelines() {
         $enabledFeaturesSet
             .map(Self.map)
-            .removeDuplicates()
+           // .removeDuplicates()
             .receive(on: DispatchQueue.main)
             .assign(to: &$enabledFeatures)
     }

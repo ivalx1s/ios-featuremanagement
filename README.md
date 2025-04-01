@@ -46,7 +46,7 @@ extension FeatureManagement.Business.Model.MyAppFeature: Identifiable {
 ## Extend `FeatureManagement.ViewState`
 
 ```swift
-extension FeatureManagement.UI.ViewState {
+extension FeatureManagement.UI.State {
     var allMembraneFeatures: [FeatureManagement.Business.Model.MyAppFeature] {
         self.allFeatures
             .compactMap { FeatureManagement.Business.Model.MyAppFeature(rawValue: $0.key) }
@@ -73,7 +73,7 @@ extension Sequence where Element == FeatureManagement.Business.Model.Feature.Key
 ```swift
 extension FeatureManagement.Business.Model.FeatureComposite {
     static func exactFeature(_ feature: FeatureManagement.Business.Model.MyAppFeature) -> Self {
-        .feature(feature: feature.rawValue)
+        .feature(feature.rawValue)
     }
 }
 ```
@@ -83,7 +83,7 @@ extension FeatureManagement.Business.Model.FeatureComposite {
 ### Connect `envObject` to View
 
 ```swift
-@EnvironmentObject private var featuresState: FeatureManagement.UI.ViewState
+@EnvironmentObject private var featuresState: FeatureManagement.UI.State
 ```
 
 ### Add Feature Propagating Modifier to View

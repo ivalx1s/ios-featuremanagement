@@ -34,7 +34,7 @@ extension FeatureManagement.Business.Model.FeatureComposite {
 extension FeatureManagement.Business.Model.Feature.Key: Sendable {}
 
 extension FeatureManagement.Business.Model {
-    public struct Feature {
+    public struct Feature: Sendable {
         public typealias Key = String
         public let key: Key
         public let label: String
