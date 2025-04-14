@@ -2,6 +2,7 @@ import Foundation
 import SwiftPlus
 
 extension FeatureManagement.Business {
+    @MainActor
     public class State: Relux.HybridState, ObservableObject {
         public typealias Model = FeatureManagement.Business.Model
         public typealias Err = FeatureManagement.Business.Err
