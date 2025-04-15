@@ -6,7 +6,8 @@ extension FeatureManagement.Business.Model {
         case anySatisfy(_ composites: [FeatureComposite])
         case not(_ composite: FeatureComposite)
         case feature(_ feature: Feature.Key)
-        case condition(() -> Bool)
+        case condition(@Sendable () -> Bool)
+        case value(Bool)
     }
 }
 
@@ -18,15 +19,17 @@ extension FeatureManagement.Business.Model.FeatureComposite {
     public static func check(_ composite: Self, against features: [FeatureManagement.Business.Model.Feature.Key]) -> Bool {
         switch composite {
             case let .feature(item):
-                return features.contains(item)
+                features.contains(item)
             case let .condition(c):
-                return c()
+                c()
+            case let .value(flag):
+                flag
             case let .not(composite):
-                return check(composite, against: features).not
+                check(composite, against: features).not
             case let .allSatisfy(composites):
-                return composites.allSatisfy { Self.check($0, against: features) }
+                composites.allSatisfy { Self.check($0, against: features) }
             case let.anySatisfy(composites):
-                return composites.contains { Self.check($0, against: features) }
+                composites.contains { Self.check($0, against: features) }
         }
     }
 }
@@ -72,3 +75,5 @@ extension FeatureManagement.Business.Model.Feature: Comparable {
         lhs.label < rhs.label
     }
 }
+
+extension FeatureManagement.Business.Model.FeatureComposite: Sendable {}
