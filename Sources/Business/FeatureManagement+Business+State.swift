@@ -18,6 +18,14 @@ extension FeatureManagement.Business {
             initPipelines()
 		}
 
+        // for testing purposes
+        public init(
+            enabledFeatures: [Model.Feature.Key]
+        ) {
+            self.enabledFeatures = .success(enabledFeatures)
+            self.allFeatures = enabledFeatures.map { .init(key: $0, label: $0) }
+        }
+
 		public func reduce(with action: Relux.Action) async {
             switch action as? Action {
                 case let .some(action): await internalReduce(with: action)
